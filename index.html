@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NurseCare — Occupational Health Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="bg-slate-50 font-inter text-slate-800 min-h-screen">
+
+<!-- ======================================================
+     LOGIN SCREEN
+     ====================================================== -->
+<div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-teal-900 via-slate-900 to-teal-800">
+  <div class="w-full max-w-sm mx-4">
+    <!-- Logo -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-teal-500 rounded-2xl mb-4 shadow-xl">
+        <svg class="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+        </svg>
+      </div>
+      <h1 class="text-2xl font-bold text-white tracking-tight">NurseCare</h1>
+      <p class="text-teal-300 text-sm mt-1">Occupational Health Management</p>
+    </div>
+
+    <!-- Login Form -->
+    <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-2xl">
+      <div id="loginError" class="hidden bg-red-500/20 border border-red-400/30 rounded-lg px-4 py-3 mb-4">
+        <p class="text-red-200 text-sm" id="loginErrorMsg"></p>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-teal-200 text-xs font-medium mb-1.5 uppercase tracking-wide">Username</label>
+          <input id="loginUsername" type="text" placeholder="Enter username"
+            class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2.5 text-white placeholder-white/40 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 text-sm transition" />
+        </div>
+        <div>
+          <label class="block text-teal-200 text-xs font-medium mb-1.5 uppercase tracking-wide">Password</label>
+          <input id="loginPassword" type="password" placeholder="Enter password"
+            class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2.5 text-white placeholder-white/40 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 text-sm transition" />
+        </div>
+        <button onclick="handleLogin()" id="loginBtn"
+          class="w-full bg-teal-500 hover:bg-teal-400 text-white font-semibold py-2.5 rounded-lg transition-all duration-200 text-sm shadow-lg hover:shadow-teal-500/25">
+          Sign In
+        </button>
+      </div>
+      <p class="text-center text-white/30 text-xs mt-4">NurseCare v1.0.0 · Secure Access</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     MAIN APP
+     ====================================================== -->
+<div id="appShell" class="hidden">
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed left-0 top-0 h-screen w-64 bg-slate-900 text-white flex flex-col z-40 transition-transform duration-300 shadow-xl">
+    <!-- Brand -->
+    <div class="flex items-center gap-3 px-5 py-5 border-b border-slate-700/50">
+      <div class="w-9 h-9 bg-teal-500 rounded-xl flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="font-bold text-sm text-white">NurseCare</h1>
+        <p class="text-xs text-slate-400">Health Management</p>
+      </div>
+    </div>
+
+    <!-- User Info -->
+    <div class="px-5 py-3 border-b border-slate-700/50">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center text-sm font-semibold" id="sidebarAvatar">?</div>
+        <div class="min-w-0">
+          <p class="text-sm font-medium text-white truncate" id="sidebarUserName">User</p>
+          <p class="text-xs text-slate-400 capitalize" id="sidebarUserRole">Role</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="flex-1 overflow-y-auto px-3 py-3 space-y-0.5" id="sidebarNav">
+      <!-- dynamically rendered -->
+    </nav>
+
+    <!-- Logout -->
+    <div class="px-3 pb-4">
+      <button onclick="handleLogout()"
+        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-700/60 transition-all text-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+        </svg>
+        Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <div class="ml-64 min-h-screen flex flex-col">
+    <!-- Top Bar -->
+    <header class="bg-white border-b border-slate-200 px-6 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+      <div class="flex items-center gap-3">
+        <button onclick="toggleSidebar()" class="text-slate-500 hover:text-slate-700 transition lg:hidden">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+        <h2 class="text-base font-semibold text-slate-800" id="pageTitle">Dashboard</h2>
+      </div>
+      <div class="flex items-center gap-4">
+        <!-- Alert Bell -->
+        <button id="alertBellBtn" onclick="showAlertPanel()" class="relative text-slate-500 hover:text-slate-700 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
+          <span id="alertCount" class="hidden absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-[10px] flex items-center justify-center font-bold">0</span>
+        </button>
+        <!-- Date -->
+        <span class="text-sm text-slate-500 font-mono" id="currentDateTime"></span>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="flex-1 p-6 overflow-auto" id="pageContent">
+      <div class="flex items-center justify-center h-64">
+        <div class="text-center">
+          <div class="w-10 h-10 border-3 border-teal-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+          <p class="text-slate-500 text-sm">Loading...</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ======================================================
+     GLOBAL MODAL
+     ====================================================== -->
+<div id="globalModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeModal()"></div>
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+      <h3 class="font-semibold text-slate-800 text-lg" id="modalTitle">Modal</h3>
+      <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 transition rounded-lg p-1 hover:bg-slate-100">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="flex-1 overflow-y-auto px-6 py-5" id="modalBody"></div>
+    <div class="px-6 py-4 border-t border-slate-100 flex gap-3 justify-end" id="modalFooter"></div>
+  </div>
+</div>
+
+<!-- ======================================================
+     TOAST NOTIFICATION
+     ====================================================== -->
+<div id="toastContainer" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-2 pointer-events-none"></div>
+
+<!-- ======================================================
+     ALERT PANEL
+     ====================================================== -->
+<div id="alertPanel" class="hidden fixed right-0 top-0 h-screen w-80 bg-white shadow-2xl z-50 flex flex-col border-l border-slate-200">
+  <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+    <h3 class="font-semibold text-slate-800">Alerts</h3>
+    <button onclick="closeAlertPanel()" class="text-slate-400 hover:text-slate-600 transition">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+  <div class="flex-1 overflow-y-auto p-4 space-y-3" id="alertPanelContent">
+    <p class="text-slate-400 text-sm text-center py-8">Loading alerts...</p>
+  </div>
+</div>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/dashboard.js"></script>
+<script src="assets/js/visits.js"></script>
+<script src="assets/js/medicines.js"></script>
+<script src="assets/js/bloodpressure.js"></script>
+<script src="assets/js/drugtests.js"></script>
+<script src="assets/js/healthchecks.js"></script>
+<script src="assets/js/history.js"></script>
+<script src="assets/js/users.js"></script>
+<script src="assets/js/auditlog.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
