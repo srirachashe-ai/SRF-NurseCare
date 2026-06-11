@@ -4,7 +4,7 @@
  */
 const NC_CONFIG = {
   // === REPLACE THIS WITH YOUR DEPLOYED APPS SCRIPT URL ===
-  API_BASE_URL: 'https://script.google.com/macros/s/AKfycbykisWaotV20-MaPvB7fcxMpMoZhUmPcjLJnrLY0j3RAYSZ6ZskAKfDRL9yVUkTB9EAWQ/exec',
+  API_BASE_URL: 'https://script.google.com/macros/s/AKfycbwWBHSNY2Q3Wsqp-HSWy2R6ufPesyIyIDiYJZrCXi_bIdyebf7TIrB5Y1oiuIYU5hdZ/exec',
   // =======================================================
 
   APP_NAME: 'NurseCare',
